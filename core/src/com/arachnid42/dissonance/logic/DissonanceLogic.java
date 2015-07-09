@@ -1,5 +1,6 @@
 package com.arachnid42.dissonance.logic;
 
+import com.arachnid42.dissonance.listeners.DissonanceLogicListener;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
 import com.arachnid42.dissonance.logic.parts.interfaces.DissonanceLogicDC;
 import com.arachnid42.dissonance.logic.parts.shape.Shape;
@@ -16,6 +17,7 @@ public class DissonanceLogic implements DissonanceLogicDC{
 	private ShapeThrower shapeThrower = null;
 	private GameStageData gameStageData = null;
 	private PerfomanceData perfomanceData = null;
+	private DissonanceLogicListener logicListener = null;
 	private GameField gameField = null;
 	private long msCatch = 0;
 	private void resetMPU(int newMpu){
@@ -60,8 +62,10 @@ public class DissonanceLogic implements DissonanceLogicDC{
 	public boolean update(){
 		if(gameField==null)
 			throw new IllegalStateException();
-		if(gameStageData.getFails()>=MAX_FAILS_COUNT)
+		if(gameStageData.getFails()>=MAX_FAILS_COUNT){
+			logicListener.onFail();
 			return false;
+		}
 		if(shapeThrower.tryToThrowShapeToGameField())
 			this.msCatch = System.currentTimeMillis();
 		if(this.gameField.update()){
@@ -106,8 +110,17 @@ public class DissonanceLogic implements DissonanceLogicDC{
 			for(int i = 0;i<this.gameField.getShapesOnFieldCount();i++)
 				this.globalShapePull.put(this.gameField.getShape(i));
 		gameField.clear();
+		logicListener.onReset();
 	}
 	public int getMPU(){
 		return this.perfomanceData.getMsPerUpdate();
+	}
+
+	public DissonanceLogicListener getLogicListener() {
+		return logicListener;
+	}
+
+	public void setLogicListener(DissonanceLogicListener logicListener) {
+		this.logicListener = logicListener;
 	}
 }

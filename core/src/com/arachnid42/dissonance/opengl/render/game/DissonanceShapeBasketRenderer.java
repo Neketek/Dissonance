@@ -195,4 +195,10 @@ public class DissonanceShapeBasketRenderer{
         drawBasketGDXPart(projection);
         drawShapePlatesShapes(projection);
     }
+    public void stopAllAnimations(){
+        savedActivePlateIndex = basket.getActivePlateIndex();
+        while(!playingAnimations.isEmpty()){
+            animationObjectCache.add(playingAnimations.remove(0));
+        }
+    }
 }

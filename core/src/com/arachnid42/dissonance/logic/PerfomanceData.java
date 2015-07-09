@@ -5,7 +5,7 @@ import com.arachnid42.dissonance.logic.parts.optimization.Formulas;
 
 public class PerfomanceData{
 	private static final float PIX2 = (float) (Math.PI*2);
-	private int msPerUpdate = 0;
+	private int msPerUpdate = 10;
 	private float speedOneSecondForWay = 0;
 	private float rotationPiX2OneSecond = 0;
 	public int getMsPerUpdate() {

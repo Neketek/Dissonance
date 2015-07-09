@@ -1,5 +1,10 @@
 package com.arachnid42.dissonance.opengl.render;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +13,11 @@ import java.util.List;
  */
 public class ColorPalette{
     private static final int BYTE_RGB_MAX_VALUE = 255;
+    public static final int COLOR_RED = 0;
+    public static final int COLOR_BLUE = 1;
+    public static final int COLOR_GREEN = 2;
+    public static final int COLOR_MAGENTA = 3;
+    public static final int COLOR_YELLOW = 4;
     public static final int RED = 0;
     public static final int GREEN = 1;
     public static final int BLUE = 2;
@@ -20,13 +30,13 @@ public class ColorPalette{
     private int currentColorIndex = 0;
     public static ColorPalette createColorPalette(){
         ColorPalette colorPalette = new ColorPalette();
-        colorPalette.colors.add(byteRgbToFloatRgb(255,23,68,1)); // color for red  255,23,68
-        colorPalette.colors.add(byteRgbToFloatRgb(79,195,247,1)); // color for blue 79,195,247
-        colorPalette.colors.add(byteRgbToFloatRgb(118,255,3,1)); // color for green 118,255,3
-        colorPalette.colors.add(byteRgbToFloatRgb(213,0,249,1)); // color for magenta 213,0,249
-        colorPalette.colors.add(byteRgbToFloatRgb(255,235,59,1)); // color for yellow 255,235,59
-        colorPalette.colors.add(byteRgbToFloatRgb(207,216,220,1)); // color for foreground 207,216,220
-        colorPalette.colors.add(byteRgbToFloatRgb(250,250,250,1)); // color for background 238,238,238
+        colorPalette.colors.add(byteRgbToFloatRgb(255,23,68,255)); // color for red  255,23,68
+        colorPalette.colors.add(byteRgbToFloatRgb(79,195,247,255)); // color for blue 79,195,247
+        colorPalette.colors.add(byteRgbToFloatRgb(118,255,3,255)); // color for green 118,255,3
+        colorPalette.colors.add(byteRgbToFloatRgb(213,0,249,255)); // color for magenta 213,0,249
+        colorPalette.colors.add(byteRgbToFloatRgb(255,235,59,255)); // color for yellow 255,235,59
+        colorPalette.colors.add(byteRgbToFloatRgb(207,216,220,255)); // color for foreground 207,216,220
+        colorPalette.colors.add(byteRgbToFloatRgb(250,250,250,255)); // color for background 238,238,238
         colorPalette.currentColorIndex = 0;
         colorPalette.currentColor = colorPalette.colors.get(0);
         return colorPalette;
@@ -72,5 +82,39 @@ public class ColorPalette{
     }
     public float[] getColorArray(int index){
         return this.colors.get(index);
+    }
+    public void setColor(SpriteBatch spriteBatch,int colorId){
+
+        spriteBatch.setColor(
+                colors.get(colorId)[RED],
+                colors.get(colorId)[GREEN],
+                colors.get(colorId)[BLUE],
+                colors.get(colorId)[ALPHA]
+        );
+     // System.out.println("COLOR:" + colors.get(colorId)[RED] + ";" + colors.get(colorId)[GREEN] + ";" + colors.get(colorId)[BLUE]+";"+colors.get(colorId)[ALPHA]);
+    }
+    public void setColor(ShapeRenderer renderer,int colorId){
+        renderer.setColor(
+                colors.get(colorId)[RED],
+                colors.get(colorId)[GREEN],
+                colors.get(colorId)[BLUE],
+                colors.get(colorId)[ALPHA]
+        );
+    }
+    public void setColor(BitmapFont font,int colorId){
+        font.setColor(
+                colors.get(colorId)[RED],
+                colors.get(colorId)[GREEN],
+                colors.get(colorId)[BLUE],
+                colors.get(colorId)[ALPHA]
+        );
+    }
+    public void setColor(GL20 gl20,int colorId){
+        gl20.glClearColor(
+                colors.get(colorId)[RED],
+                colors.get(colorId)[GREEN],
+                colors.get(colorId)[BLUE],
+                colors.get(colorId)[ALPHA]
+        );
     }
 }

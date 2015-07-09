@@ -1,10 +1,11 @@
 package com.arachnid42.dissonance.listeners;
 
+import com.arachnid42.dissonance.DissonanceResources;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.logic.GameStageData;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
 import com.arachnid42.dissonance.logic.parts.field.ShapeBasket;
-import com.arachnid42.dissonance.logic.parts.interfaces.ShapeBasketDC;
+import com.arachnid42.dissonance.menu.layout.DissonanceVirtualGrid;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 
@@ -19,6 +20,16 @@ public class InGameTouchListener extends InputAdapter{
     private GameField gameField = null;
     private DissonanceLogic dissonanceLogic = null;
     private int mainFingerId = -1;
+    private boolean isCameraMoving(){
+        return DissonanceResources.getDissonanceState().isCameraMoving();
+    }
+    private void toPauseMenu(){
+        DissonanceResources.getDissonanceLogicRenderer().stopAllAnimations();
+        Gdx.input.setInputProcessor(DissonanceResources.getInMenuTouchListener());
+        DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.PAUSE_MENU);
+        DissonanceResources.getDissonanceState().setActiveMenu(DissonanceResources.getDissonanceScreenGrid().getPauseMenu());
+        DissonanceResources.getDissonanceState().setCameraMoving(true);
+    }
     private boolean isFingerOnBasket(float x,float y){
         return (y<=basket.getTop()&&y>=basket.getBottom())&&(x<=basket.getRight()&&x>=basket.getLeft());
     }
@@ -34,6 +45,8 @@ public class InGameTouchListener extends InputAdapter{
     }
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
+        if(isCameraMoving())
+            return false;
         if(mainFingerId==-1) {
             mainFingerId = pointer;
             y = Gdx.graphics.getHeight()-y;
@@ -46,11 +59,13 @@ public class InGameTouchListener extends InputAdapter{
     }
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        if(isCameraMoving())
+            return false;
         if(mainFingerId==pointer) {
             mainFingerId = -1;
             y = Gdx.graphics.getHeight()-y;
             if(isFingerOnField(x,y)&&preparedToPause) {
-                dissonanceLogic.reset();
+                toPauseMenu();
                 preparedToPause = false;
             }
             else
@@ -60,6 +75,8 @@ public class InGameTouchListener extends InputAdapter{
     }
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
+        if(isCameraMoving())
+            return  false;
         //System.out.println("MAIN FINGER:"+mainFingerId+" FINGER:"+pointer);
         if(mainFingerId==NO_MAIN_FINGER)
             mainFingerId = pointer;

@@ -17,7 +17,7 @@ import java.util.logging.FileHandler;
 /**
  * Created by neketek on 03.07.15.
  */
-public class DissonanceFontRenderer implements Disposable{
+public class DissonanceFontRenderer{
     public static final int SMALL = 0;
     public static final int MEDIUM = 1;
     public static final int LARGE = 2;
@@ -42,13 +42,13 @@ public class DissonanceFontRenderer implements Disposable{
         size[LARGE] = parameter.size;
         generator.dispose();
     }
-    public DissonanceFontRenderer(){
+    public DissonanceFontRenderer(SpriteBatch spriteBatch){
         size = new float[3];
         colorArray = new float[4];
         colorArray[3] = 1;
         fonts = new ArrayList<BitmapFont>();
         createFontsUsingScreenSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        spriteBatch = new SpriteBatch();
+        this.spriteBatch = spriteBatch;
     }
     public void begin(Matrix4 projection){
         spriteBatch.setProjectionMatrix(projection);
@@ -75,11 +75,5 @@ public class DissonanceFontRenderer implements Disposable{
     }
     public float getFontSize(int fontId){
         return this.size[fontId];
-    }
-    @Override
-    public void dispose() {
-        spriteBatch.dispose();
-        for(BitmapFont font:fonts)
-            font.dispose();
     }
 }

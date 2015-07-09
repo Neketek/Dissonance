@@ -1,5 +1,6 @@
 package com.arachnid42.dissonance.opengl.render.game;
 
+import com.arachnid42.dissonance.DissonanceResources;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
 import com.arachnid42.dissonance.opengl.render.ColorPalette;
@@ -153,21 +154,33 @@ public class DissonanceLogicRenderer {
         drawScoreLabel();
         dissonanceFontRenderer.end();
     }
-    public DissonanceLogicRenderer(DissonanceLogic dissonanceLogic, ColorPalette colorPalette){
+    public void stopAllAnimations(){
+        gameModeChanged = false;
+        savedGameMode = dissonanceLogic.getGameStageData().getGameMode();
+        shapeBasketRenderer.stopAllAnimations();
+    }
+    public DissonanceLogicRenderer(DissonanceLogic dissonanceLogic,
+                                   DissonanceShapeRenderer dissonanceShapeRenderer,
+                                   ShapeRenderer gdxShapeRenderer,
+                                   DissonanceFontRenderer fontRenderer,
+                                   ColorPalette colorPalette){
         this.dissonanceLogic = dissonanceLogic;
         this.gameField = dissonanceLogic.getGameField();
         this.colorPalette = colorPalette;
-        this.gdxShapeRenderer = new ShapeRenderer();
+        this.gdxShapeRenderer = gdxShapeRenderer;
         this.gdxShapeRenderer.setAutoShapeType(true);
-        this.shapeRenderer = new DissonanceShapeRenderer(500);
-        this.shapeRenderer.setColorPalette(colorPalette);
+        this.shapeRenderer = dissonanceShapeRenderer;
         this.shapeBasketRenderer = new DissonanceShapeBasketRenderer(gameField.getShapeBasket(),
-                shapeRenderer,gdxShapeRenderer);
+                shapeRenderer,this.gdxShapeRenderer);
         this.backGroundColor = colorPalette.getColorArray(BACKGROUND);
-        this.dissonanceFontRenderer = new DissonanceFontRenderer();
+        this.dissonanceFontRenderer = fontRenderer;
         this.gameModeChangeAnimation = new GameModeChangeAnimation();
     }
     public void render(Matrix4 projection){
+        if(!DissonanceResources.getDissonanceScreenGrid().isGameFieldVisible()){
+            drawGameFieldBackGround(projection);
+            return;
+        }
         checkGameModeChange();
         drawShapeBasket(projection);
         drawGameFieldBackGround(projection);
