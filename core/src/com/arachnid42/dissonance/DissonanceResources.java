@@ -76,10 +76,6 @@ public class DissonanceResources {
         dissonanceState.setActiveMenu(dissonanceScreenGrid.getMainMenu());
         dissonanceScreenGridController.setCameraLocation(DissonanceVirtualGrid.MAIN_MENU);
         inGameTouchListener = new InGameTouchListener();
-        inGameTouchListener.setDissonanceLogic(getDissonanceLogic());
-        inGameTouchListener.setGameStageData(getDissonanceLogic().getGameStageData());
-        inGameTouchListener.setGameField(getDissonanceLogic().getGameField());
-        inGameTouchListener.setShapeBasket(getDissonanceLogic().getGameField().getShapeBasket());
         dissonanceButtonsListener = new DissonanceButtonsListener();
         inMenuTouchListener = new InMenuTouchListener(dissonanceState,dissonanceButtonsListener);
         dissonanceLogicListener = new DissonanceLogicListener();

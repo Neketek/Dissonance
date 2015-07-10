@@ -1,5 +1,6 @@
 package com.arachnid42.dissonance.listeners;
 
+import com.arachnid42.dissonance.DissonanceConfig;
 import com.arachnid42.dissonance.DissonanceResources;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.menu.layout.DissonanceVirtualGrid;
@@ -14,12 +15,17 @@ public class DissonanceLogicListener{
     public DissonanceLogicListener(){
         dissonanceLogicRenderer = DissonanceResources.getDissonanceLogicRenderer();
     }
-    public void onReset(){
+    public void afterReset(){
         DissonanceResources.getDissonanceState().setGameFailed(false);
         dissonanceLogicRenderer.stopAllAnimations();
     }
     public void onFail(){
         DissonanceResources.getDissonanceState().setGameFailed(true);
        // dissonanceLogicRenderer.stopAllAnimations();
+    }
+    public void beforeReset(){
+        // TODO: add internet verification of max score save
+        if(DissonanceConfig.maxScore<DissonanceResources.getDissonanceLogic().getGameStageData().getScore())
+            DissonanceConfig.maxScore = DissonanceResources.getDissonanceLogic().getGameStageData().getScore();
     }
 }

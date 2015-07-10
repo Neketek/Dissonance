@@ -6,7 +6,7 @@ import com.arachnid42.dissonance.logic.parts.interfaces.DissonanceLogicDC;
 import com.arachnid42.dissonance.logic.parts.shape.Shape;
 
 public class DissonanceLogic implements DissonanceLogicDC{
-	private static final int STANDART_SHAPE_PULL_SIZE = 20;
+	private static final int STANDARD_SHAPE_PULL_SIZE = 20;
 	private static final int DEFAULT_FALL_PATH_COUNT = 4;
 	private static final int MAX_FAILS_COUNT = 1; // TODO:change this constant to 1
 	private static final float FALL_SPEED_SCALE_AFTER_FAIL = 1.1f;
@@ -33,7 +33,7 @@ public class DissonanceLogic implements DissonanceLogicDC{
 	public DissonanceLogic(){
 		this.gameStageData = new GameStageData();
 		this.perfomanceData = new PerfomanceData();
-		this.globalShapePull = new GlobalShapePull(DEFAULT_FALL_PATH_COUNT,STANDART_SHAPE_PULL_SIZE,perfomanceData);
+		this.globalShapePull = new GlobalShapePull(DEFAULT_FALL_PATH_COUNT, STANDARD_SHAPE_PULL_SIZE,perfomanceData);
 		this.shapeThrower = new ShapeThrower(gameStageData, perfomanceData, globalShapePull);
 	}
 	public void setGameField(GameField gameField){
@@ -103,6 +103,7 @@ public class DissonanceLogic implements DissonanceLogicDC{
 		return true;
 	}
 	public void reset(){
+		logicListener.beforeReset();
 		gameStageData.reset();
 		if(gameField==null)
 			return;
@@ -110,7 +111,7 @@ public class DissonanceLogic implements DissonanceLogicDC{
 			for(int i = 0;i<this.gameField.getShapesOnFieldCount();i++)
 				this.globalShapePull.put(this.gameField.getShape(i));
 		gameField.clear();
-		logicListener.onReset();
+		logicListener.afterReset();
 	}
 	public int getMPU(){
 		return this.perfomanceData.getMsPerUpdate();

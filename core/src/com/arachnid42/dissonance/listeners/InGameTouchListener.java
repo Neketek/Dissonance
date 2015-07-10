@@ -1,6 +1,7 @@
 package com.arachnid42.dissonance.listeners;
 
 import com.arachnid42.dissonance.DissonanceResources;
+import com.arachnid42.dissonance.DissonanceState;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.logic.GameStageData;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
@@ -16,12 +17,23 @@ public class InGameTouchListener extends InputAdapter{
     private static final int NO_MAIN_FINGER = -1;
     private boolean preparedToPause = false;
     private ShapeBasket basket = null;
-    private GameStageData gameStageData = null;
     private GameField gameField = null;
-    private DissonanceLogic dissonanceLogic = null;
-    private int mainFingerId = -1;
+    private int mainFingerId = NO_MAIN_FINGER;
+    private DissonanceState dissonanceState = null;
     private boolean isCameraMoving(){
         return DissonanceResources.getDissonanceState().isCameraMoving();
+    }
+    private boolean isGameFailed(){
+        return this.dissonanceState.isGameFailed();
+    }
+    private boolean isSomeMenuActive(){
+        return dissonanceState.getActiveMenu()!=null;
+    }
+    private boolean isBaskedPlateChangeEnabled(){
+        return !(isCameraMoving()||isGameFailed()||isSomeMenuActive());
+    }
+    private float getYCoordinateInWorldSystem(float y){
+        return Gdx.graphics.getHeight()-y;
     }
     private void toPauseMenu(){
         DissonanceResources.getDissonanceLogicRenderer().stopAllAnimations();
@@ -37,83 +49,76 @@ public class InGameTouchListener extends InputAdapter{
         return  y>=gameField.getFallPathFieldBottom()&&y<=gameField.getFallPathFieldBottom()+gameField.getHeight()&&
                 x>=gameField.getFallPathFieldLeft()&&x<=gameField.getFallPathFieldLeft()+gameField.getHeight();
     }
+    private boolean isMainFinger(int fingerId){
+        if(mainFingerId==NO_MAIN_FINGER) {
+            mainFingerId = fingerId;
+            return true;
+        }
+        return fingerId == mainFingerId;
+    }
     private int getPlateIndexAt(float x){
         for(int i = 0;i<basket.getPlateCount();i++)
             if(x>=basket.getPlateWidth()*i&&basket.getPlateWidth()*(i+1)>=x)
                 return i;
         return -1;
     }
-    @Override
-    public boolean touchDown(int x, int y, int pointer, int button) {
-        if(isCameraMoving())
-            return false;
-        if(mainFingerId==-1) {
-            mainFingerId = pointer;
-            y = Gdx.graphics.getHeight()-y;
-            if(isFingerOnField(x,y)){
-                preparedToPause = true;
+    private boolean switchShapeBasketPlate(float x,float y){
+        y = getYCoordinateInWorldSystem(y);
+        if(isFingerOnBasket(x,y)){
+            int plateIndex = getPlateIndexAt(x);
+            if(plateIndex>=0) { // пофиксил тупую ошибку, вместо индекса была координата.
+                basket.setActivePlate(plateIndex);
+                preparedToPause = false; // если плитку переключили, то в паузу не войдешь.
+                return true;
             }
+            return false;
+        }
+        return false;
+    }
+    private void setPreparedToPause(float x,float y){
+        y = getYCoordinateInWorldSystem(y);
+        preparedToPause = isFingerOnField(x,y);
+    }
+    private boolean tryToTurnOffMainFingerId(int fingerId){
+        if(fingerId==mainFingerId) {
+            mainFingerId = NO_MAIN_FINGER;
             return true;
         }
         return false;
     }
-    @Override
-    public boolean touchUp(int x, int y, int pointer, int button) {
-        if(isCameraMoving())
-            return false;
-        if(mainFingerId==pointer) {
-            mainFingerId = -1;
-            y = Gdx.graphics.getHeight()-y;
-            if(isFingerOnField(x,y)&&preparedToPause) {
-                toPauseMenu();
-                preparedToPause = false;
-            }
-            else
-                preparedToPause = false;
-        }
-        return false;
+    private void tryToGoToPauseMenu(){
+        if(preparedToPause)
+            toPauseMenu();
+        preparedToPause = false;
+    }
+    public InGameTouchListener(){
+        dissonanceState = DissonanceResources.getDissonanceState();
+        basket = DissonanceResources.getDissonanceLogic().getGameField().getShapeBasket();
+        gameField = DissonanceResources.getDissonanceLogic().getGameField();
     }
     @Override
-    public boolean touchDragged(int x, int y, int pointer) {
-        if(isCameraMoving())
-            return  false;
-        //System.out.println("MAIN FINGER:"+mainFingerId+" FINGER:"+pointer);
-        if(mainFingerId==NO_MAIN_FINGER)
-            mainFingerId = pointer;
-        else
-            if(pointer!=mainFingerId)
+    public boolean touchDown(int x, int y, int pointer, int button){
+        if(isMainFinger(pointer)){
+            if(isBaskedPlateChangeEnabled()&&switchShapeBasketPlate(x,y))// теперь плитки переключаются и по тапу.
                 return true;
-        //System.out.println("CHECK BORDER FOR BASKET");
-        y = Gdx.graphics.getHeight()-y;
-        if(isFingerOnBasket(x,y)){
-           // System.out.println("CHECK BORDER FOR BASKET:TRUE");
-            int plateIndex = getPlateIndexAt(x);
-            if(x>=0)
-                basket.setActivePlate(plateIndex);
+            else
+                setPreparedToPause(x,y);
         }
         return true;
     }
-    public void setShapeBasket(ShapeBasket basket){
-        if (basket == null)
-            throw new IllegalArgumentException();
-        this.basket = basket;
-    }
-    public void setGameStageData(GameStageData gameStageData){
-        if (gameStageData == null) {
-            throw new IllegalArgumentException();
+    @Override
+    public boolean touchUp(int x, int y, int pointer, int button) {
+        if(tryToTurnOffMainFingerId(pointer)) {
+            tryToGoToPauseMenu();
         }
-        this.gameStageData = gameStageData;
+        return true;
     }
-    public void setDissonanceLogic(DissonanceLogic dissonanceLogic){
-        if (dissonanceLogic == null) {
-            throw new IllegalArgumentException();
+    @Override
+    public boolean touchDragged(int x, int y, int pointer) {
+        if(isBaskedPlateChangeEnabled()&&isMainFinger(pointer)){
+            switchShapeBasketPlate(x,y);
+            return true;
         }
-        this.dissonanceLogic = dissonanceLogic;
-    }
-    public void setGameField(GameField gameField){
-        if (gameField == null) {
-            throw new IllegalArgumentException();
-        }
-        this.gameField = gameField;
+        return true;
     }
 }

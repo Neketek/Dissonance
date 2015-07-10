@@ -1,5 +1,6 @@
 package com.arachnid42.dissonance.listeners;
 
+import com.arachnid42.dissonance.DissonanceConfig;
 import com.arachnid42.dissonance.DissonanceResources;
 import com.arachnid42.dissonance.DissonanceState;
 import com.arachnid42.dissonance.menu.DissonanceMenu;
@@ -29,9 +30,13 @@ public class DissonanceButtonsListener implements DissonanceButtonListener {
                 DissonanceResources.resetDissonanceLogic();
                 break;
             case EXIT:
+                DissonanceResources.getDissonanceLogic().reset();// this code check not ended game score
+                // to white it in file
+                DissonanceConfig.saveConfig();
                 System.exit(0);
                 break;
             case SETTINGS:
+                DissonanceResources.getDissonanceScreenGrid().getSettingsMenu().tryToDisableAdsButton();
                 DissonanceResources.getDissonanceState().setActiveMenu(DissonanceResources.getDissonanceScreenGrid().getSettingsMenu());
                 DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.SETTINGS_MENU);
                 break;
@@ -47,6 +52,14 @@ public class DissonanceButtonsListener implements DissonanceButtonListener {
                 Gdx.input.setInputProcessor(DissonanceResources.getInGameTouchListener());
                 if(DissonanceResources.getDissonanceState().isGameFailed())
                     DissonanceResources.getDissonanceLogic().reset();
+                break;
+            case SOUND:
+                DissonanceConfig.soundEnabled=!DissonanceConfig.soundEnabled;
+                DissonanceResources.getDissonanceScreenGrid().getSettingsMenu().setSoundEnabled(DissonanceConfig.soundEnabled);
+                break;
+            case NO_ADS:
+                DissonanceResources.getDissonanceState().setActiveMenu(DissonanceResources.getDissonanceScreenGrid().getMainMenu());
+                DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.MAIN_MENU);
                 break;
         }
       //  DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.GAME);
