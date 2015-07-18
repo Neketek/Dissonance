@@ -152,7 +152,7 @@ public class DissonanceLogicRenderer {
         private void captureFill(Matrix4 projection, float x, float y, float w, float h){
             GL20 gl20 = Gdx.gl20;
             gl20.glEnable(GL20.GL_BLEND);
-            gl20.glBlendFunc(GL20.GL_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             gdxShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             gdxShapeRenderer.setColor(0, 0, 0, fillAlpha);
             gdxShapeRenderer.rect(x, y, w, h);
