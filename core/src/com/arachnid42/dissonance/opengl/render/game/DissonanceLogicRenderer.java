@@ -1,11 +1,15 @@
 package com.arachnid42.dissonance.opengl.render.game;
 
+import com.arachnid42.dissonance.logic.parts.shape.Shape;
+import com.arachnid42.dissonance.utils.DissonanceConfig;
 import com.arachnid42.dissonance.utils.DissonanceResources;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
 import com.arachnid42.dissonance.opengl.render.ColorPalette;
 import com.arachnid42.dissonance.opengl.render.DissonanceFontRenderer;
+import com.arachnid42.dissonance.utils.DissonanceState;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -18,6 +22,10 @@ import static com.arachnid42.dissonance.opengl.render.ColorPalette.*;
  * Created by neketek on 03.07.15.
  */
 public class DissonanceLogicRenderer {
+    private static final int SHAPE_TUTORIAL = 0;
+    private static final int GAME_MODE_TUTORIAL = 1;
+    private static final int SHAPE_BASKET_TUTORIAL = 2;
+    private static final int GAME_RULES_TUTORIAL = 3;
     private static final String COLOR_COMPARSION = "COLOR";
     private static final String SHAPE_COMPARSION = "SHAPE";
     private static final String[] GAME_MODE_LABEL = {COLOR_COMPARSION,SHAPE_COMPARSION};
@@ -36,8 +44,214 @@ public class DissonanceLogicRenderer {
     private DissonanceLogic dissonanceLogic = null;
     private DissonanceFontRenderer dissonanceFontRenderer = null;
     private GameModeChangeAnimation gameModeChangeAnimation = null;
+    private float grayForGameMode = 230f/255f;
+    private float grayForScoreLabel = 0;
+    private float scoreLabelAlpha = 0.6f;
+    private TutorialAnimator tutorialAnimator = null;
     private int previous_score = -1;
     private int scoreArraySize = 2;
+    private int tutorialStage = 0;
+    private DissonanceState state = null;
+    private class TutorialAnimator{
+        private int textSizeId = DissonanceFontRenderer.SMALL;
+        private float lineHeight = dissonanceFontRenderer.getFontSize(textSizeId);
+        private float characterWidth = lineHeight/2;
+        private float fillAlpha = 0.0f;
+        private float fillAlphaUpLimit = 0.8f;
+        private float fillAlphaDownLimit = 0;
+        private boolean fadeIn = true;
+        private boolean animated = false;
+        private void drawShapeTutorialLabel(Matrix4 projection){
+            dissonanceFontRenderer.begin(projection);
+            dissonanceFontRenderer.setTextColor(grayForGameMode, grayForGameMode, grayForGameMode, fillAlpha);
+            dissonanceFontRenderer.renderText("This is a figure.", gameField.getWidth() / 2 + characterWidth * 13,
+                    gameField.getShape(0).getY() - gameField.getShape(0).getRadius() * 2,
+                    textSizeId, 0, false);
+            dissonanceFontRenderer.renderText("It has two parameters:",gameField.getWidth()/2+characterWidth*16,
+                    gameField.getShape(0).getY()-gameField.getShape(0).getRadius()*2-lineHeight*1.5f,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("1)COLOR",gameField.getWidth()/2+characterWidth*16,
+                    gameField.getShape(0).getY()-gameField.getShape(0).getRadius()*2-lineHeight*1.5f*2,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("2)SHAPE",gameField.getWidth()/2+characterWidth*16,
+                    gameField.getShape(0).getY()-gameField.getShape(0).getRadius()*2-lineHeight*1.5f*3,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("Tap to continue.",gameField.getWidth()/2+characterWidth*13,
+                    gameField.getShape(0).getY()-gameField.getShape(0).getRadius()*2-lineHeight*1.5f*4,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.end();
+        }
+        private void drawGameModeTutorialLabel(Matrix4 projection){
+            dissonanceFontRenderer.begin(projection);
+            dissonanceFontRenderer.setTextColor(grayForGameMode, grayForGameMode, grayForGameMode, fillAlpha);
+            dissonanceFontRenderer.renderText("This is a game mode.", gameField.getWidth() / 2 + characterWidth * 13,gameField.getHeight()/2,
+                    textSizeId, 0, false);
+            dissonanceFontRenderer.renderText("It can change during the game to",gameField.getWidth()/2+characterWidth*18,
+                    gameField.getHeight()/2-lineHeight*1.5f,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("SHAPE or COLOR",gameField.getWidth()/2+characterWidth*11,
+                    gameField.getHeight()/2-lineHeight*1.5f*2,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("Tap to continue.",gameField.getWidth()/2+characterWidth*10,
+                    gameField.getHeight()/2-lineHeight*1.5f*3,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.end();
+        }
+        private void drawShapeBasketTutorialLabel(Matrix4 projection){
+            dissonanceFontRenderer.begin(projection);
+            dissonanceFontRenderer.setTextColor(grayForGameMode, grayForGameMode, grayForGameMode, fillAlpha);
+            dissonanceFontRenderer.renderText("This is a shape basket.", gameField.getWidth() / 3 + characterWidth * 13, gameField.getHeight() / 2,
+                    textSizeId, 0, false);
+            dissonanceFontRenderer.renderText("You can switch between plates",gameField.getWidth()/3+characterWidth*18,
+                    gameField.getHeight()/2-lineHeight*1.5f,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("by tap or swipe.",gameField.getWidth()/3+characterWidth*11,
+                    gameField.getHeight()/2-lineHeight*1.5f*2,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("But remember, it reacts to",gameField.getWidth()/3+characterWidth*15,
+                    gameField.getHeight()/2-lineHeight*1.5f*3,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("only one finger at the same time.",gameField.getWidth()/3+characterWidth*18,
+                    gameField.getHeight()/2-lineHeight*1.5f*4,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("Tap to continue.",gameField.getWidth()/3+characterWidth*9,
+                    gameField.getHeight()/2-lineHeight*1.5f*5,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.end();
+        }
+
+        private void drawGameRulesTutorial(Matrix4 projection) {
+            dissonanceFontRenderer.begin(projection);
+            dissonanceFontRenderer.setTextColor(grayForGameMode, grayForGameMode, grayForGameMode, fillAlpha);
+            dissonanceFontRenderer.renderText("This is game concept.", gameField.getWidth() / 2 + characterWidth * 10,
+                    gameField.getHeight() / 1.5f,
+                    textSizeId, 0, false);
+            dissonanceFontRenderer.renderText("You should switch between plates",gameField.getWidth()/2+characterWidth*15,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("to catch figure to the basket",gameField.getWidth()/2+characterWidth*11,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f*2,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("choosing the plates depending of ",gameField.getWidth()/2+characterWidth*15,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f*3,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("game mode, by shape or color.",gameField.getWidth()/2+characterWidth*12,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f*4,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("You can enable tutorial again",gameField.getWidth()/2+characterWidth*12,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f*5,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("in the settings menu.",gameField.getWidth()/2+characterWidth*9,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f*6,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.renderText("Tap to continue the game.",gameField.getWidth()/2+characterWidth*10,
+                    gameField.getHeight()/1.5f-lineHeight*1.5f*7,
+                    textSizeId, 0,false);
+            dissonanceFontRenderer.end();
+        }
+        private void captureFill(Matrix4 projection, float x, float y, float w, float h){
+            GL20 gl20 = Gdx.gl20;
+            gl20.glEnable(GL20.GL_BLEND);
+            gl20.glBlendFunc(GL20.GL_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            gdxShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            gdxShapeRenderer.setColor(0, 0, 0, fillAlpha);
+            gdxShapeRenderer.rect(x, y, w, h);
+            gdxShapeRenderer.end();
+            gl20.glDisable(GL20.GL_BLEND);
+        }
+        private void captureShapeBasketFill(Matrix4 projection){
+            captureFill(projection, 0, gameField.getShapeBasket().getIndicatorTop(), gameField.getWidth(),
+                    gameField.getHeight());
+        }
+        private void captureWholeScreen(Matrix4 projection){
+            captureFill(projection,0,0,gameField.getWidth(),gameField.getHeight());
+        }
+        private void releaseCapture() {
+            fadeIn = false;
+            animated = true;
+        }
+        private void nextStage(){
+            if(animated)
+                return;
+            animated = true;
+            fadeIn = false;
+        }
+        private void renderCurrentStageFill(Matrix4 projection){
+            switch(tutorialStage){
+                case SHAPE_TUTORIAL:
+                    renderShapeTutorial(projection);
+                    break;
+                case GAME_MODE_TUTORIAL:
+                    renderGameModeTutorial(projection);
+                    break;
+                case SHAPE_BASKET_TUTORIAL:
+                    renderShapeBasketTutorial(projection);
+                    break;
+                case GAME_RULES_TUTORIAL:
+                    renderGameConceptTutorial(projection);
+                    break;
+                default:
+                    DissonanceConfig.tutorialEnabled = false;
+                    state.setTutorialStarted(false);
+                    break;
+            }
+        }
+        private void updateAnimation(float delta){
+            if (fadeIn){
+                fillAlpha += delta;
+                if(fillAlpha>=fillAlphaUpLimit){
+                    fillAlpha = fillAlphaUpLimit;
+                    animated = false;
+                }
+            }else{
+                fillAlpha-=delta;
+                if(fillAlpha<=fillAlphaDownLimit) {
+                    fillAlpha = fillAlphaDownLimit;
+                    // animated = false;
+                    tutorialStage++;
+                    fadeIn = true;
+                    //animated=true;
+                }
+            }
+        }
+
+        public void renderShapeTutorial(Matrix4 projection){
+            drawShapeBasket(projection);
+            drawGameFieldBackGround(projection);
+            drawLabels(projection);
+            captureWholeScreen(projection);
+            drawShapesOnField(projection);
+            drawShapeTutorialLabel(projection);
+        }
+        public void renderGameModeTutorial(Matrix4 projection){
+            drawShapeBasket(projection);
+            drawGameFieldBackGround(projection);
+            drawShapesOnField(projection);
+            captureWholeScreen(projection);
+            drawLabels(projection);
+            drawGameModeTutorialLabel(projection);
+        }
+        public void renderShapeBasketTutorial(Matrix4 projection){
+            drawShapeBasket(projection);
+            drawGameFieldBackGround(projection);
+            drawLabels(projection);
+            drawShapesOnField(projection);
+            captureShapeBasketFill(projection);
+            drawShapeBasketTutorialLabel(projection);
+        }
+        public void renderGameConceptTutorial(Matrix4 projection){
+            drawShapeBasket(projection);
+            drawGameFieldBackGround(projection);
+            drawLabels(projection);
+            drawShapesOnField(projection);
+            captureWholeScreen(projection);
+            drawGameRulesTutorial(projection);
+        }
+        public void renderCurrentStage(Matrix4 projection){
+            renderCurrentStageFill(projection);
+            //TODO:add texts
+        }
+    }
     private class GameModeChangeAnimation{
         private final float labelWidth = dissonanceFontRenderer.getFontSize(DissonanceFontRenderer.LARGE)*5/2;
         private final float finalLabelPositionX = gameField.getWidth() / 2;
@@ -156,9 +370,10 @@ public class DissonanceLogicRenderer {
     }
     private void drawLabels(Matrix4 projection){
         dissonanceFontRenderer.begin(projection);
-        dissonanceFontRenderer.setTextColor(0,0,0,0.07f);
+        dissonanceFontRenderer.setTextColor(grayForGameMode,grayForGameMode,grayForGameMode,1);
         drawGameModeLabel();
-        dissonanceFontRenderer.setTextColor(0,0,0,0.3f);
+        dissonanceFontRenderer.setTextColor(grayForScoreLabel,grayForScoreLabel,
+                grayForScoreLabel,scoreLabelAlpha);
         drawScoreLabel();
         dissonanceFontRenderer.end();
     }
@@ -166,6 +381,16 @@ public class DissonanceLogicRenderer {
         gameModeChanged = false;
         savedGameMode = dissonanceLogic.getGameStageData().getGameMode();
         shapeBasketRenderer.stopAllAnimations();
+    }
+    private boolean tutorialStartCondition(){
+        if(gameField.getShapesOnFieldCount()>0){
+            Shape shape = gameField.getShape(0);
+            float r = shape.getRadius();
+            float y = shape.getY();
+            float gfh = gameField.getHeight();
+            return gfh-y >=r*2;
+        }
+        return false;
     }
     public DissonanceLogicRenderer(DissonanceLogic dissonanceLogic,
                                    DissonanceShapeRenderer dissonanceShapeRenderer,
@@ -183,16 +408,37 @@ public class DissonanceLogicRenderer {
         this.backGroundColor = colorPalette.getColorArray(BACKGROUND);
         this.dissonanceFontRenderer = fontRenderer;
         this.gameModeChangeAnimation = new GameModeChangeAnimation();
+        tutorialAnimator = new TutorialAnimator();
+        this.state = DissonanceResources.getDissonanceState();
     }
     public void render(Matrix4 projection){
         if(!DissonanceResources.getDissonanceScreenGrid().isGameFieldVisible()){
             drawGameFieldBackGround(projection);
             return;
         }
+        if(DissonanceConfig.tutorialEnabled){
+            if(!state.isTutorialStarted()){
+                if(tutorialStartCondition()){
+                    state.setTutorialStarted(true);
+                    tutorialStage = 0;
+                    tutorialAnimator.fadeIn = true;
+                    tutorialAnimator.animated = true;
+                }
+            }else{
+                tutorialAnimator.renderCurrentStage(projection);
+                if(tutorialAnimator.animated)
+                    tutorialAnimator.updateAnimation(Gdx.graphics.getDeltaTime());
+                if(DissonanceConfig.tutorialEnabled)
+                    return;
+            }
+        }
         checkGameModeChange();
         drawShapeBasket(projection);
         drawGameFieldBackGround(projection);
         drawLabels(projection);
         drawShapesOnField(projection);
+    }
+    public void requestTutorialNextStage(){
+        this.tutorialAnimator.nextStage();
     }
 }

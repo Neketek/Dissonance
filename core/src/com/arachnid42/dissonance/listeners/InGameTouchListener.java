@@ -109,6 +109,10 @@ public class InGameTouchListener extends InputAdapter{
     }
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        if(dissonanceState.isTutorialStarted()){
+            DissonanceResources.getDissonanceLogicRenderer().requestTutorialNextStage();
+            return true;
+        }
         if(tryToTurnOffMainFingerId(pointer)) {
             tryToGoToPauseMenu();
         }

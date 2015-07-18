@@ -61,4 +61,5 @@ public class DissonanceConfig {
     public static boolean soundEnabled = true;
     public static boolean adsEnabled = true;
     public static int maxScore = 0;
+    public static boolean tutorialEnabled = true;
 }

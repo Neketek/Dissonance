@@ -25,11 +25,12 @@ public class DissonanceFontRenderer{
     private float size[] = null;
     private float colorArray[] = null;
     private SpriteBatch spriteBatch = null;
+    private boolean wrapContent = false;
     private void createFontsUsingScreenSize(int width,int height){
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Roboto-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         //small
-        parameter.size = width/20;
+        parameter.size = width/24;
         fonts.add(generator.generateFont(parameter));
         size[SMALL] = parameter.size;
         //medium
@@ -64,11 +65,16 @@ public class DissonanceFontRenderer{
         this.setTextColor(rgbaColorArray[0], rgbaColorArray[1], rgbaColorArray[2], rgbaColorArray[3]);
     }
     public void renderText(String text,float x,float y,int textSize,int halign,boolean verticalCentered){
-        fonts.get(textSize).setColor(colorArray[0],colorArray[1],colorArray[2],colorArray[3]);//TODO: Установить смену цвета текста через метод
+        BitmapFont font = fonts.get(textSize);
+        font.setColor(colorArray[0],colorArray[1],colorArray[2],colorArray[3]);//TODO: Установить смену цвета текста через метод
         if(!verticalCentered)
-            fonts.get(textSize).draw(spriteBatch,text,x,y,0,halign,false);
+            font.draw(spriteBatch,text,x,y,0,halign,wrapContent);
         else
-            fonts.get(textSize).draw(spriteBatch,text,x,y-size[textSize]/2,0,halign,false);
+            font.draw(spriteBatch,text,x,y-size[textSize]/2,0,halign,wrapContent);
+        wrapContent = false;
+    }
+    public void setWrapContent(boolean wrapContent){
+
     }
     public void end(){
         spriteBatch.end();

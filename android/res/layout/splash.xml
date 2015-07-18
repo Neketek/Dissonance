@@ -11,7 +11,7 @@
         android:id="@+id/imageLogo"
         android:src="@drawable/logo"
         android:layout_gravity="fill_horizontal|center_vertical"
-        android:background="#ff9b9b9b"
+        android:background="#ff323232"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:layout_centerVertical="true"
