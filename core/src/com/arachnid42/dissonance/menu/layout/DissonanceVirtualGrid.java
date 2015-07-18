@@ -4,7 +4,7 @@ package com.arachnid42.dissonance.menu.layout;
  * Created by neketek on 08.07.15.
  */
 public class DissonanceVirtualGrid{
-    public static final int GRID_COUNT = 5;
+    public static final int GRID_COUNT = 6;
     public static final int COORDINATE_COUNT = 2;
     public static final int RECT = 0;
     public static final int CENTER = 1;
@@ -15,6 +15,7 @@ public class DissonanceVirtualGrid{
     public static final int PAUSE_MENU = 2;
     public static final int SCORE_MENU = 3;
     public static final int GAME = 4;
+    public static final int SPLASH_SCREEN = 5;
     private static final float MARGIN_COEFFICIENT = 0.0f;
     private float screenWidth = 0;
     private float screenHeight = 0;
@@ -35,6 +36,7 @@ public class DissonanceVirtualGrid{
     private void calculateGridCoordinates(){
         float margin = screenWidth*MARGIN_COEFFICIENT;
         writeRectCoordinatesTo(gridRectCoordinates[GAME],0,0,margin);
+        writeRectCoordinatesTo(gridRectCoordinates[SPLASH_SCREEN],0,0,margin);
         writeRectCoordinatesTo(gridRectCoordinates[PAUSE_MENU],1,0,margin);
         writeRectCoordinatesTo(gridRectCoordinates[MAIN_MENU],-1,0,margin);
         writeRectCoordinatesTo(gridRectCoordinates[SETTINGS_MENU],-1,1,margin);

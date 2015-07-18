@@ -64,6 +64,7 @@ public class DissonanceLogic implements DissonanceLogicDC{
 			throw new IllegalStateException();
 		if(gameStageData.getFails()>=MAX_FAILS_COUNT){
 			logicListener.onFail();
+		//	gameStageData.setGameMode(GameStageData.GAME_FAILED);
 			return false;
 		}
 		if(shapeThrower.tryToThrowShapeToGameField())
@@ -92,11 +93,13 @@ public class DissonanceLogic implements DissonanceLogicDC{
 				gameStageData.decreaseSecondForReaction(SECOND_FOR_REACTION_CHANGE_AFTER_DROP);
 			}
 			else{
+				logicListener.onShapeFall();
 				gameStageData.decreaseSecondForReaction(SECOND_FOR_REACTION_CHANGE_AFTER_DROP);
 				gameField.scaleSpeedOfShapesOnScreen(FALL_SPEED_SCALE_AFTER_SUCC);
 			}
 		}
 		if(gameStageData.gameModeSwapCondition(gameField,perfomanceData.getMsPerUpdate())){
+			logicListener.onGameModeChange();
 			gameStageData.swapGameModes();
 			gameField.scaleSpeedOfShapesOnScreen(FALL_SPEED_SCALE_AFTER_GM_SWAP);
 		}

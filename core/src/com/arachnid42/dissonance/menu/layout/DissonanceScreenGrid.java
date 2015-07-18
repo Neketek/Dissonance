@@ -1,12 +1,8 @@
 package com.arachnid42.dissonance.menu.layout;
 
-import com.arachnid42.dissonance.Dissonance;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
-import com.arachnid42.dissonance.menu.DissonanceMainMenu;
-import com.arachnid42.dissonance.menu.DissonanceMenu;
-import com.arachnid42.dissonance.menu.DissonancePauseMenu;
-import com.arachnid42.dissonance.menu.DissonanceSettingsMenu;
+import com.arachnid42.dissonance.menu.*;
 import com.arachnid42.dissonance.opengl.render.DissonanceCameraTool;
 
 import  static  com.arachnid42.dissonance.menu.layout.DissonanceVirtualGrid.*;

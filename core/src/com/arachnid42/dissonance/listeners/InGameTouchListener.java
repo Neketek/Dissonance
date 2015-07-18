@@ -1,9 +1,7 @@
 package com.arachnid42.dissonance.listeners;
 
-import com.arachnid42.dissonance.DissonanceResources;
-import com.arachnid42.dissonance.DissonanceState;
-import com.arachnid42.dissonance.logic.DissonanceLogic;
-import com.arachnid42.dissonance.logic.GameStageData;
+import com.arachnid42.dissonance.utils.DissonanceResources;
+import com.arachnid42.dissonance.utils.DissonanceState;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
 import com.arachnid42.dissonance.logic.parts.field.ShapeBasket;
 import com.arachnid42.dissonance.menu.layout.DissonanceVirtualGrid;
@@ -30,7 +28,7 @@ public class InGameTouchListener extends InputAdapter{
         return dissonanceState.getActiveMenu()!=null;
     }
     private boolean isBaskedPlateChangeEnabled(){
-        return !(isCameraMoving()||isGameFailed()||isSomeMenuActive());
+        return !(isGameFailed()||isSomeMenuActive());
     }
     private float getYCoordinateInWorldSystem(float y){
         return Gdx.graphics.getHeight()-y;
@@ -39,6 +37,7 @@ public class InGameTouchListener extends InputAdapter{
         DissonanceResources.getDissonanceLogicRenderer().stopAllAnimations();
         Gdx.input.setInputProcessor(DissonanceResources.getInMenuTouchListener());
         DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.PAUSE_MENU);
+        DissonanceResources.getDissonanceCameraTool().setWaitBeforeMoveEnabled(false);
         DissonanceResources.getDissonanceState().setActiveMenu(DissonanceResources.getDissonanceScreenGrid().getPauseMenu());
         DissonanceResources.getDissonanceState().setCameraMoving(true);
     }
@@ -98,6 +97,8 @@ public class InGameTouchListener extends InputAdapter{
     }
     @Override
     public boolean touchDown(int x, int y, int pointer, int button){
+        if(isCameraMoving()||dissonanceState.isTutorialStarted())
+            return true;
         if(isMainFinger(pointer)){
             if(isBaskedPlateChangeEnabled()&&switchShapeBasketPlate(x,y))// теперь плитки переключаются и по тапу.
                 return true;
@@ -115,6 +116,8 @@ public class InGameTouchListener extends InputAdapter{
     }
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
+        if(isCameraMoving()||dissonanceState.isTutorialStarted())
+            return true;
         if(isBaskedPlateChangeEnabled()&&isMainFinger(pointer)){
             switchShapeBasketPlate(x,y);
             return true;

@@ -9,6 +9,7 @@ import com.arachnid42.dissonance.logic.parts.optimization.Formulas;
 public class GameStageData implements GameStageDataDC{
 	public static final int COLOR_COMPARISON = 0;
 	public static final int SHAPE_COMPARISON = 1;
+	public static final int GAME_FAILED = 2;
 	private static final int MODE_CHANGE_MIN_INTERVAL = 8;
 	private static final int MODE_CHANGE_INTERVAL_EPS = 5;
 	private static final int MODE_CHANGE_MAX_INTERVAL = 12;
@@ -110,7 +111,7 @@ public class GameStageData implements GameStageDataDC{
 		return this.droppedShapeCount;
 	}
 	public void setGameMode(int gameMode){
-		if(gameMode>SHAPE_COMPARISON||gameMode<COLOR_COMPARISON)
+		if(gameMode>GAME_FAILED||gameMode<COLOR_COMPARISON)
 			throw new IllegalArgumentException();
 		this.gameMode = gameMode;
 	}
@@ -126,4 +127,5 @@ public class GameStageData implements GameStageDataDC{
 	public int getModeChangeInterval(){
 		return this.modeChangeInterval;
 	}
+
 }

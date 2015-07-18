@@ -46,7 +46,7 @@ public class ShapeThrower{
 	private float getOptimalSpeed(){
 		setMinMaxFallTime();
 		float time = minFallTime-gameStageData.getSecondsForReaction();
-		if(time>gameStageData.getSecondsForReaction())
+		if(time>gameStageData.getSecondsForReaction()*1.5f)
 			return getFallSpeedForNSeconds(time);
 		else
 			return getFallSpeedForNSeconds(maxFallTime+gameStageData.getSecondsForReaction());

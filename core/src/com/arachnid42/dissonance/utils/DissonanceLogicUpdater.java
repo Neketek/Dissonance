@@ -1,4 +1,4 @@
-package com.arachnid42.dissonance;
+package com.arachnid42.dissonance.utils;
 
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +15,9 @@ public class DissonanceLogicUpdater{
         dissonanceState = DissonanceResources.getDissonanceState();
     }
     public void update(float delta){
-        if(dissonanceState.isCameraMoving()||dissonanceState.getActiveMenu()!=null)
+        if(dissonanceState.isCameraMoving()
+                || dissonanceState.getActiveMenu()!=null
+                ||dissonanceState.isTutorialStarted())
             return;
         int newMpu = (int)(Gdx.graphics.getDeltaTime()*1000);
         if(newMpu==0)

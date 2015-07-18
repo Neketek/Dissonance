@@ -2,6 +2,7 @@ package com.arachnid42.dissonance.opengl.render.menu;
 
 import com.arachnid42.dissonance.menu.DissonanceMenu;
 import com.arachnid42.dissonance.opengl.render.ColorPalette;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -18,13 +19,21 @@ public class DissonanceMenuRenderer {
         this.colorPalette = colorPalette;
     }
     public void render(DissonanceMenu menu,Matrix4 projection){
-        if(!menu.isVisible())
+        menu.updateAnimation(Gdx.graphics.getDeltaTime());
+        if(!menu.isVisible()) {
             return;
-        colorPalette.setColor(shapeRenderer,ColorPalette.BACKGROUND);
+        }
+        colorPalette.setColor(shapeRenderer, ColorPalette.BACKGROUND);
         shapeRenderer.setProjectionMatrix(projection);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.rect(menu.getX(), menu.getY(), menu.getWidth(), menu.getHeight());
         shapeRenderer.end();
-        buttonRenderer.render(menu.getButtonList(),projection);
+        if(menu.isAnimated()) {
+            if(menu.getAlpha()>menu.getFirstDelta())
+                 buttonRenderer.render(menu.getButtonList(), projection);
+        }
+        else{
+            buttonRenderer.render(menu.getButtonList(), projection);
+        }
     }
 }

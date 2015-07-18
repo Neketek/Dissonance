@@ -1,4 +1,4 @@
-package com.arachnid42.dissonance;
+package com.arachnid42.dissonance.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

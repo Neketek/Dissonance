@@ -44,6 +44,7 @@ public class DissonanceMainMenu extends DissonanceMenu {
         add(exit);
         add(score);
         add(settings);
+        startFadeIn(0);
 
     }
     public DissonanceMainMenu(float x, float y, float w, float h) {

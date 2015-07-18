@@ -1,6 +1,6 @@
 package com.arachnid42.dissonance.listeners;
 
-import com.arachnid42.dissonance.DissonanceState;
+import com.arachnid42.dissonance.utils.DissonanceState;
 import com.arachnid42.dissonance.menu.DissonanceMenu;
 import com.arachnid42.dissonance.menu.button.DissonanceButton;
 import com.badlogic.gdx.Gdx;

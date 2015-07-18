@@ -1,12 +1,10 @@
-package com.arachnid42.dissonance;
+package com.arachnid42.dissonance.utils;
 
 import com.arachnid42.dissonance.listeners.DissonanceButtonsListener;
 import com.arachnid42.dissonance.listeners.DissonanceLogicListener;
 import com.arachnid42.dissonance.listeners.InGameTouchListener;
 import com.arachnid42.dissonance.listeners.InMenuTouchListener;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
-import com.arachnid42.dissonance.menu.button.DissonanceButton;
-import com.arachnid42.dissonance.menu.button.DissonanceButtonListener;
 import com.arachnid42.dissonance.menu.layout.DissonanceScreenGrid;
 import com.arachnid42.dissonance.menu.layout.DissonanceScreenGridController;
 import com.arachnid42.dissonance.menu.layout.DissonanceVirtualGrid;
@@ -43,7 +41,9 @@ public class DissonanceResources {
     private static DissonanceButtonsListener dissonanceButtonsListener = null;
     private static DissonanceLogicListener dissonanceLogicListener = null;
     private static boolean initialized = false;
-    public static void initializeDissonanceResources(float screenWidth,float screenHeight){
+    private static DissonanceAdsController dissonanceAdsController = null;
+    private static DissonanceSound dissonanceSound = null;
+    public static void initializeDissonanceResources(float screenWidth,float screenHeight,DissonanceAdsController adsController){
         if (initialized)
             return;
         DissonanceConfig.initConfig();
@@ -75,12 +75,14 @@ public class DissonanceResources {
                 colorPalette);
         dissonanceState.setActiveMenu(dissonanceScreenGrid.getMainMenu());
         dissonanceScreenGridController.setCameraLocation(DissonanceVirtualGrid.MAIN_MENU);
-        inGameTouchListener = new InGameTouchListener();
         dissonanceButtonsListener = new DissonanceButtonsListener();
         inMenuTouchListener = new InMenuTouchListener(dissonanceState,dissonanceButtonsListener);
         dissonanceLogicListener = new DissonanceLogicListener();
+        dissonanceSound = new DissonanceSound();
         getDissonanceLogic().setLogicListener(dissonanceLogicListener);
         getDissonanceLogic().reset();
+        dissonanceAdsController = adsController;
+        inGameTouchListener = new InGameTouchListener();
         initialized = true;
     }
     public static DissonanceCameraTool getDissonanceCameraTool() {
@@ -154,4 +156,13 @@ public class DissonanceResources {
     public static void resetDissonanceLogic(){
         getDissonanceLogic().reset();
     }
+
+    public static DissonanceAdsController getDissonanceAdsController() {
+        return dissonanceAdsController;
+    }
+
+    public static DissonanceSound getDissonanceSound() {
+        return dissonanceSound;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.arachnid42.dissonance.opengl.render.game;
 
-import com.arachnid42.dissonance.DissonanceResources;
+import com.arachnid42.dissonance.utils.DissonanceResources;
 import com.arachnid42.dissonance.logic.DissonanceLogic;
 import com.arachnid42.dissonance.logic.parts.field.GameField;
 import com.arachnid42.dissonance.opengl.render.ColorPalette;
@@ -21,8 +21,9 @@ public class DissonanceLogicRenderer {
     private static final String COLOR_COMPARSION = "COLOR";
     private static final String SHAPE_COMPARSION = "SHAPE";
     private static final String[] GAME_MODE_LABEL = {COLOR_COMPARSION,SHAPE_COMPARSION};
-    private static  final  String SCORE = "SCORE:";
+    private static  final  String SCORE = "SCORE ";
     private static final String[] NUMBERS = {"0","1","2","3","4","5","6","7","8","9"};
+    private static final String SPACE = " ";
     private static final String[] SCORE_COUNT = new String[4];
     private boolean gameModeChanged = false;
     private int savedGameMode = 0;
@@ -36,6 +37,7 @@ public class DissonanceLogicRenderer {
     private DissonanceFontRenderer dissonanceFontRenderer = null;
     private GameModeChangeAnimation gameModeChangeAnimation = null;
     private int previous_score = -1;
+    private int scoreArraySize = 2;
     private class GameModeChangeAnimation{
         private final float labelWidth = dissonanceFontRenderer.getFontSize(DissonanceFontRenderer.LARGE)*5/2;
         private final float finalLabelPositionX = gameField.getWidth() / 2;
@@ -108,8 +110,8 @@ public class DissonanceLogicRenderer {
     }
     private void drawGameModeLabel(){
         if(!gameModeChanged)
-            dissonanceFontRenderer.renderText(GAME_MODE_LABEL[savedGameMode], gameField.getWidth() / 2,
-                gameField.getHeight() / 2 + gameField.getShapeBasket().getTop(), DissonanceFontRenderer.LARGE, Font.CENTER_BASELINE, true);
+                dissonanceFontRenderer.renderText(GAME_MODE_LABEL[savedGameMode], gameField.getWidth() / 2,
+                    gameField.getHeight() / 2 + gameField.getShapeBasket().getTop(), DissonanceFontRenderer.LARGE, Font.CENTER_BASELINE, true);
         else{
             gameModeChanged = gameModeChangeAnimation.update(Gdx.graphics.getDeltaTime());
             if(!gameModeChanged)
@@ -126,31 +128,37 @@ public class DissonanceLogicRenderer {
             SCORE_COUNT[1] = NUMBERS[(score/100)];
             SCORE_COUNT[2] = NUMBERS[(score%100/10)];
             SCORE_COUNT[3] = NUMBERS[(score%100%10)];
+            scoreArraySize = 4;
             return;
         }
         if(dissonanceLogic.getGameStageData().getScore()>=10){
-            SCORE_COUNT[1] = NUMBERS[0];
-            SCORE_COUNT[2] = NUMBERS[(score/10)];
-            SCORE_COUNT[3] = NUMBERS[(score%10)];
+            SCORE_COUNT[1] = NUMBERS[(score/10)];
+            SCORE_COUNT[2] = NUMBERS[(score%10)];
+            SCORE_COUNT[3] = SPACE;
+            scoreArraySize = 3;
             return;
         }
-        SCORE_COUNT[1] = NUMBERS[0];
-        SCORE_COUNT[2] = NUMBERS[0];
-        SCORE_COUNT[3] = NUMBERS[score];
+        SCORE_COUNT[1] = NUMBERS[score];
+        SCORE_COUNT[2] = SPACE;
+        SCORE_COUNT[3] = SPACE;
+        scoreArraySize = 2;
     }
     private void drawScoreLabel() {
         recalculateScoreLabel();
-        for(int i = 0;i<4;i++)
+        for(int i = 0;i<scoreArraySize;i++)
             dissonanceFontRenderer.renderText(SCORE_COUNT[i],
-                Gdx.graphics.getWidth()-dissonanceFontRenderer.getFontSize(DissonanceFontRenderer.SMALL)*(3-i)/2,
-                Gdx.graphics.getHeight(),
+                gameField.getWidth()
+                        -dissonanceFontRenderer.getFontSize(DissonanceFontRenderer.SMALL)*
+                        (scoreArraySize-i-1)/2
+                        -dissonanceFontRenderer.getFontSize(DissonanceFontRenderer.SMALL)/2,
+                gameField.getHeight(),
                 DissonanceFontRenderer.SMALL,0,true);
     }
     private void drawLabels(Matrix4 projection){
         dissonanceFontRenderer.begin(projection);
-        dissonanceFontRenderer.setTextColor(0,0,0,0.3f);
+        dissonanceFontRenderer.setTextColor(0,0,0,0.07f);
         drawGameModeLabel();
-        dissonanceFontRenderer.setTextColor(0,0,0,0.6f);
+        dissonanceFontRenderer.setTextColor(0,0,0,0.3f);
         drawScoreLabel();
         dissonanceFontRenderer.end();
     }

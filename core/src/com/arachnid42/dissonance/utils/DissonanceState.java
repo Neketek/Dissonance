@@ -1,4 +1,4 @@
-package com.arachnid42.dissonance;
+package com.arachnid42.dissonance.utils;
 
 import com.arachnid42.dissonance.menu.DissonanceMenu;
 
@@ -6,6 +6,7 @@ import com.arachnid42.dissonance.menu.DissonanceMenu;
  * Created by neketek on 08.07.15.
  */
 public class DissonanceState{
+    private boolean tutorialStarted = false;
     private boolean gameFailed = false;
     private DissonanceMenu activeMenu = null;
     private boolean cameraMoving = false;
@@ -30,5 +31,13 @@ public class DissonanceState{
 
     public void setGameFailed(boolean gameFailed) {
         this.gameFailed = gameFailed;
+    }
+
+    public boolean isTutorialStarted() {
+        return tutorialStarted;
+    }
+
+    public void setTutorialStarted(boolean tutorialStarted) {
+        this.tutorialStarted = tutorialStarted;
     }
 }

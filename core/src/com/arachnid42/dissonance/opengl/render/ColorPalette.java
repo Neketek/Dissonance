@@ -36,7 +36,7 @@ public class ColorPalette{
         colorPalette.colors.add(byteRgbToFloatRgb(213,0,249,255)); // color for magenta 213,0,249
         colorPalette.colors.add(byteRgbToFloatRgb(255,235,59,255)); // color for yellow 255,235,59
         colorPalette.colors.add(byteRgbToFloatRgb(207,216,220,255)); // color for foreground 207,216,220
-        colorPalette.colors.add(byteRgbToFloatRgb(250,250,250,255)); // color for background 238,238,238
+        colorPalette.colors.add(byteRgbToFloatRgb(245,245,245,255)); // color for background 238,238,238
         colorPalette.currentColorIndex = 0;
         colorPalette.currentColor = colorPalette.colors.get(0);
         return colorPalette;

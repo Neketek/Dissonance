@@ -1,10 +1,13 @@
 package com.arachnid42.dissonance.menu.button;
 
+import com.arachnid42.dissonance.menu.DissonanceMenu;
+
 import java.util.ArrayList;
 /**
  * Created by neketek on 07.07.15.
  */
 public class DissonanceButton{
+
     public static DissonanceButton createStandardButton(float menuWidth,float menuHeight){
         DissonanceButton button = new DissonanceButton();
         button.setWidth(menuWidth/3);
@@ -14,6 +17,7 @@ public class DissonanceButton{
         button.setShowIcon(true);
         return button;
     }
+    private static float BASIC_ACTIVE_TIME_LIMIT = 0.1f;
     public static final int PLAY = 0;
     public static final int SETTINGS = 1;
     public static final int SCORE = 2;
@@ -38,6 +42,9 @@ public class DissonanceButton{
     private int textureColor = 0;
     private int buttonId = 0;
     private boolean showIcon = true;
+    private boolean active = false;
+    private float activeTime = 0;
+    private DissonanceMenu owner;
     private void recalculateIconData(){
         this.iconX = x+iconMarginWidth;
         this.iconWidth = width-2*iconMarginWidth;
@@ -119,7 +126,15 @@ public class DissonanceButton{
         this.x = x;
         recalculateIconData();
     }
-
+    public void updateActiveTime(float delta){
+        if(!active)
+            return;
+        activeTime+=delta;
+        if(activeTime>=BASIC_ACTIVE_TIME_LIMIT) {
+            activeTime = 0;
+            active = false;
+        }
+    }
     public int getColorPaletteId() {
         return colorPaletteId;
     }
@@ -174,6 +189,23 @@ public class DissonanceButton{
 
     public void setButtonId(int buttonId) {
         this.buttonId = buttonId;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+    //TODO: I HAVE ADD THE ACTIVATION ANIMATION
+    public void setActive(boolean active) {
+        if(this.active==active)
+            return;
+        this.active = active;
+        this.activeTime = 0;
+    }
+    public void setOwner(DissonanceMenu menu){
+        this.owner = menu;
+    }
+    public DissonanceMenu getOwner(){
+        return this.owner;
     }
 }
 

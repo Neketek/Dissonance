@@ -1,8 +1,9 @@
 package com.arachnid42.dissonance.listeners;
 
-import com.arachnid42.dissonance.DissonanceConfig;
-import com.arachnid42.dissonance.DissonanceResources;
-import com.arachnid42.dissonance.DissonanceState;
+import com.arachnid42.dissonance.utils.DissonanceConfig;
+import com.arachnid42.dissonance.utils.DissonanceResources;
+import com.arachnid42.dissonance.utils.DissonanceSound;
+import com.arachnid42.dissonance.utils.DissonanceState;
 import com.arachnid42.dissonance.menu.DissonanceMenu;
 import com.arachnid42.dissonance.menu.button.DissonanceButton;
 import com.arachnid42.dissonance.menu.button.DissonanceButtonListener;
@@ -21,6 +22,10 @@ public class DissonanceButtonsListener implements DissonanceButtonListener {
     }
     @Override
     public void onTouchDown(DissonanceButton button) {
+        button.setActive(true);
+        DissonanceResources.getDissonanceSound().play(DissonanceSound.BUTTON);
+        if(DissonanceConfig.adsEnabled&&state.getActiveMenu().getType()==DissonanceMenu.PAUSE_MENU)//TODO:SHOW ADS
+             DissonanceResources.getDissonanceAdsController().showAds();
         switch (button.getButtonId()){
             case PLAY:
                 DissonanceResources.getDissonanceScreenGrid().setGameFieldVisible(true);

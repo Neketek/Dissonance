@@ -1,11 +1,9 @@
 package com.arachnid42.dissonance.listeners;
 
-import com.arachnid42.dissonance.DissonanceConfig;
-import com.arachnid42.dissonance.DissonanceResources;
-import com.arachnid42.dissonance.logic.DissonanceLogic;
-import com.arachnid42.dissonance.menu.layout.DissonanceVirtualGrid;
+import com.arachnid42.dissonance.utils.DissonanceConfig;
+import com.arachnid42.dissonance.utils.DissonanceResources;
 import com.arachnid42.dissonance.opengl.render.game.DissonanceLogicRenderer;
-import com.badlogic.gdx.Gdx;
+import com.arachnid42.dissonance.utils.DissonanceSound;
 
 /**
  * Created by neketek on 08.07.15.
@@ -27,5 +25,11 @@ public class DissonanceLogicListener{
         // TODO: add internet verification of max score save
         if(DissonanceConfig.maxScore<DissonanceResources.getDissonanceLogic().getGameStageData().getScore())
             DissonanceConfig.maxScore = DissonanceResources.getDissonanceLogic().getGameStageData().getScore();
+    }
+    public void onGameModeChange(){
+        DissonanceResources.getDissonanceSound().play(DissonanceSound.GAME_MODE);
+    }
+    public void onShapeFall(){
+        DissonanceResources.getDissonanceSound().play(DissonanceSound.SHAPE);
     }
 }

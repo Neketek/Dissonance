@@ -1,6 +1,6 @@
 package com.arachnid42.dissonance.menu;
 
-import com.arachnid42.dissonance.DissonanceConfig;
+import com.arachnid42.dissonance.utils.DissonanceConfig;
 import com.arachnid42.dissonance.menu.button.DissonanceButton;
 import com.arachnid42.dissonance.opengl.render.ColorPalette;
 import com.arachnid42.dissonance.opengl.render.DissonanceTexturePack;

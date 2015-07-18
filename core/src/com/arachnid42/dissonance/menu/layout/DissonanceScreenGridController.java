@@ -6,7 +6,7 @@ import com.arachnid42.dissonance.opengl.render.DissonanceCameraTool;
  * Created by neketek on 08.07.15.
  */
 public class DissonanceScreenGridController {
-    private static float MOVE_TIME = 0.5f;
+    private static float MOVE_TIME = 0.2f;
     private DissonanceScreenGrid dissonanceScreenGrid = null;
     private DissonanceCameraTool dissonanceCameraTool = null;
     public DissonanceScreenGridController(DissonanceScreenGrid screenGrid,DissonanceCameraTool cameraTool){
