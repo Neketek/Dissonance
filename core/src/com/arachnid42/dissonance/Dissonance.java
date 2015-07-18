@@ -23,7 +23,7 @@ public class Dissonance extends ApplicationAdapter {
 		DissonanceResources.getColorPalette().setColor(Gdx.gl20, ColorPalette.BACKGROUND);
 		//DissonanceResources.getDissonanceScreenGrid().getMainMenu().startFadeIn();
 		Gdx.input.setInputProcessor(DissonanceResources.getInMenuTouchListener());
-		Gdx.graphics.setVSync(true);
+		//Gdx.graphics.setVSync(true);
 		dissonanceMainRenderer = new DissonanceMainRenderer();
 		dissonanceLogicUpdater = new DissonanceLogicUpdater();
 	}

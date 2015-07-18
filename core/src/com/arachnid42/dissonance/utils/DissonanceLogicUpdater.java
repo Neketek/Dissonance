@@ -8,23 +8,31 @@ import com.badlogic.gdx.Gdx;
  */
 public class DissonanceLogicUpdater{
     private static final int MPU_CHANGE_EPS = 2;
+    private int changeMpuCounter = 0;
     private DissonanceState dissonanceState = null;
     private DissonanceLogic dissonanceLogic = null;
     public DissonanceLogicUpdater(){
         dissonanceLogic = DissonanceResources.getDissonanceLogic();
         dissonanceState = DissonanceResources.getDissonanceState();
     }
+    private void checkMPU(){
+        int newMpu = 1000/(Gdx.graphics.getFramesPerSecond()+1);
+        if(newMpu==0)
+            return;
+        if(Math.abs(dissonanceLogic.getMPU() - newMpu)>MPU_CHANGE_EPS) {
+            changeMpuCounter++;
+        }else
+            changeMpuCounter = 0;
+        if(changeMpuCounter>10){
+            dissonanceLogic.setMPU(newMpu);
+        }
+    }
     public void update(float delta){
-       // System.out.println("FPS:"+Gdx.graphics.getFramesPerSecond());
+        checkMPU();
         if(dissonanceState.isCameraMoving()
                 || dissonanceState.getActiveMenu()!=null
                 ||dissonanceState.isTutorialStarted())
             return;
-        int newMpu = 1000/Gdx.graphics.getFramesPerSecond();
-        if(newMpu==0)
-            return;
-        if(Math.abs(dissonanceLogic.getMPU() - newMpu)>MPU_CHANGE_EPS)
-            dissonanceLogic.setMPU(newMpu);
         dissonanceLogic.update();
     }
 }
