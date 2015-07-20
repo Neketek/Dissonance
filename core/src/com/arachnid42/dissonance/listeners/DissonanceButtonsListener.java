@@ -1,5 +1,7 @@
 package com.arachnid42.dissonance.listeners;
 
+import com.arachnid42.dissonance.menu.DissonanceSettingsMenu;
+import com.arachnid42.dissonance.menu.layout.DissonanceScreenGrid;
 import com.arachnid42.dissonance.utils.DissonanceConfig;
 import com.arachnid42.dissonance.utils.DissonanceResources;
 import com.arachnid42.dissonance.utils.DissonanceSound;
@@ -63,8 +65,13 @@ public class DissonanceButtonsListener implements DissonanceButtonListener {
                 DissonanceResources.getDissonanceScreenGrid().getSettingsMenu().setSoundEnabled(DissonanceConfig.soundEnabled);
                 break;
             case NO_ADS:
+                //DissonanceConfig.adsEnabled = false; TODO:MAKE in app no ad purchase
                 DissonanceResources.getDissonanceState().setActiveMenu(DissonanceResources.getDissonanceScreenGrid().getMainMenu());
                 DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.MAIN_MENU);
+                break;
+            case TUTORIAL:
+                DissonanceConfig.tutorialEnabled = !DissonanceConfig.tutorialEnabled;
+                DissonanceResources.getDissonanceScreenGrid().getSettingsMenu().setTutorialEnabled(DissonanceConfig.tutorialEnabled);
                 break;
         }
       //  DissonanceResources.getDissonanceScreenGridController().setCameraMoveTask(DissonanceVirtualGrid.GAME);

@@ -2,6 +2,7 @@ package com.arachnid42.dissonance;
 import com.arachnid42.dissonance.opengl.render.ColorPalette;
 import com.arachnid42.dissonance.opengl.render.DissonanceMainRenderer;
 import com.arachnid42.dissonance.utils.DissonanceAdsController;
+import com.arachnid42.dissonance.utils.DissonanceConfig;
 import com.arachnid42.dissonance.utils.DissonanceLogicUpdater;
 import com.arachnid42.dissonance.utils.DissonanceResources;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -37,5 +38,11 @@ public class Dissonance extends ApplicationAdapter {
 			return;
 		dissonanceMainRenderer.render();
 		dissonanceLogicUpdater.update(Gdx.graphics.getDeltaTime());
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+		DissonanceConfig.saveConfig();
 	}
 }

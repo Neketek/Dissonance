@@ -19,6 +19,8 @@ public class DissonanceTexturePack implements Disposable{
     public static final  int SOUND_OFF_ICON = 4;
     public static final  int SOUND_ON_ICON = 5;
     public static final  int NO_ADS_ICON = 6;
+    public static final  int TUTORIAL_ON_ICON = 7;
+    public static final int TUTORIAL_OFF_ICON = 8;
     private ArrayList<Texture>textures = null;
     private void load(String filePath){
         FileHandle f = null;
@@ -35,6 +37,8 @@ public class DissonanceTexturePack implements Disposable{
         load("textures/soundOff.png"); // 4
         load("textures/soundOn.png"); // 5
         load("textures/noAds.png"); // 6
+        load("textures/tutorialOn.png"); // 7
+        load("textures/tutorialOff.png"); // 8
     }
     public DissonanceTexturePack(){
         loadTexturePack();

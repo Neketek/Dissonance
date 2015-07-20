@@ -26,6 +26,7 @@ public class DissonanceButton{
     public static final int NO_ADS = 5;
     public static final int EXIT_TO_MAIN = 6;
     public static final int RESUME = 7;
+    public static final int TUTORIAL = 8;
     private ArrayList<DissonanceButtonListener>listeners = null;
     private float x = 0;
     private float y = 0;

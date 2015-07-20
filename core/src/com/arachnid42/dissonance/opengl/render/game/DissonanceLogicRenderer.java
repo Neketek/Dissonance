@@ -430,6 +430,8 @@ public class DissonanceLogicRenderer {
                     tutorialAnimator.updateAnimation(Gdx.graphics.getDeltaTime());
                 if(DissonanceConfig.tutorialEnabled)
                     return;
+                else
+                    DissonanceResources.getDissonanceScreenGrid().getSettingsMenu().setTutorialEnabled(false);
             }
         }
         checkGameModeChange();
