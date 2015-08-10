@@ -2,6 +2,14 @@
 <resources>
     <string name="app_name">Dissonance</string>
     <string name="ads_unit_id"></string>
-    <string name="app_id"></string>
-    <string name="title_activity_google_play_services">GooglePlayServicesActivity</string>
+    <string name="app_id">582020423644</string>
+    <string name="achievement_that_is_you_eagle_eye">CgkI3L_7mPgQEAIQAQ</string>
+    <string name="achievement_this_weird_shapes">CgkI3L_7mPgQEAIQAg</string>
+    <string name="achievement_this_weird_colors">CgkI3L_7mPgQEAIQAw</string>
+    <string name="achievement_you_are_playing_better_than_creator">CgkI3L_7mPgQEAIQBA</string>
+    <string name="achievement_10_games.">CgkI3L_7mPgQEAIQCQ</string>
+    <string name="achievement_50_games.">CgkI3L_7mPgQEAIQBw</string>
+    <string name="achievement_100_games.">CgkI3L_7mPgQEAIQCA</string>
+    <string name="achievement_you_are_tough">CgkI3L_7mPgQEAIQBQ</string>
+    <string name="leaderboard_dissonance">CgkI3L_7mPgQEAIQBg</string>
 </resources>
